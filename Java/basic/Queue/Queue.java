@@ -34,29 +34,26 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Queue<Item> implements Iterable<Item> {
-	private Node<Item> first;
-	private Node<Item> last;
+	private Item[] q;
 	private int N;
-
-	private static class Node<Item> {
-		private Item item;
-		private Node<Item> next;
-	}
-
+	private int first;
+	private int last;
+	
 	/**
 	 * 初始化一个空队列
 	 */
 	public Queue() {
-		first = null;
-		last = null;
+		q = (Item[]) new Object[2];
 		N = 0;
+		first = 0;
+		last = 0;
 	}
 	
 	/**
 	 * 如果队列为空返回true
 	 */
 	public boolean isEmpty() {
-		return first == null;
+		return N == 0;
 	}
 
 	/**
@@ -64,6 +61,18 @@ public class Queue<Item> implements Iterable<Item> {
 	 */
 	public int size() {
 		return N;
+	}
+
+	//改变泛型数组长度
+	public void resize(int max) {
+		assert max >= N;
+		Item[] temp = (Item[]) new Object[max];
+		for(int i = 0; i < N; i++) {
+			temp[i] = q[(first + i) % q.length];
+		}
+		q = temp;
+		first = 0;
+		last = N;
 	}
 
 	/**
@@ -74,7 +83,7 @@ public class Queue<Item> implements Iterable<Item> {
 	 */
 	public Item peek() {
 		if(isEmpty()) throw new NoSuchElementException("Queue underfow");
-		return first.item;
+		return q[first];
 	}
 
 	/**
@@ -83,12 +92,9 @@ public class Queue<Item> implements Iterable<Item> {
 	 * @param item 被添加的元素
 	 */
 	public void enqueue(Item item) {
-		Node<Item> oldlast = last;
-		last = new Node<Item>();
-		last.item = item;
-		last.next = null;
-		if(isEmpty()) first = last;
-		else oldlast.next = last;
+		if(N == q.length) resize(2 * q.length);
+		q[last++] = item;
+		if(last == q.length) last = 0;
 		N++;
 	}
 
@@ -100,10 +106,11 @@ public class Queue<Item> implements Iterable<Item> {
 	 */
 	 public Item dequeue() {
 		if(isEmpty()) throw new NoSuchElementException("Queue underflow");
-		Item item = first.item;
-		first = first.next;
+		Item item = q[first];
+		q[first] = null;
 		N--;
-		if(isEmpty()) last = null;
+		if(first == q.length) first = 0;
+		if(N > 0 && N == q.length / 4) resize(q.length / 2);
 		return item;
 	 }
 
@@ -126,25 +133,19 @@ public class Queue<Item> implements Iterable<Item> {
 	 * @return an iterator that iterates over the items in this queue in FIFO order
 	 */
 	public Iterator<Item> iterator() {
-		return new ListIterator<Item>(first);
+		return new QueueIterator();
 	}
 	
 	//一个迭代器，但没有实现remove()方法，因为它是可选的
-	private class ListIterator<Item> implements Iterator<Item> {
-		private Node<Item> current;
-
-		public ListIterator(Node<Item> first) {
-			current = first;
-		}
-
-		public boolean hasNext() {return current != null;}
-
+	private class QueueIterator implements Iterator<Item> {
+		private int i = 0;
+		public boolean hasNext() {return i < N;}
 		public void remove() {throw new UnsupportedOperationException();};
 
 		public Item next() {
 			if(!hasNext()) throw new NoSuchElementException();
-			Item item = current.item;
-			current = current.next;
+			Item item = q[(i + first) % q.length];
+			i++;
 			return item;
 		}
 	}
