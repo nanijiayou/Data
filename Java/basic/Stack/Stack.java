@@ -26,69 +26,63 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Stack<Item> implements Iterable<Item> {
-	private Node<Item> first;
+	private Item[] a;
 	private int N;
 
-	private static class Node<Item> {
-		private Item item;
-		private Node<Item> next;
-	}
-
 	public Stack() {
-		first = null;
+		a = (Item[]) new Object[2];
 		N = 0;
 	}
 
 	public boolean isEmpty() {
-		return first == null;
+		return N == 0;
 	}
 
 	public int size() {
 		return N;
 	}
 
+	private void resize(int capacity) {
+		assert capacity >= N;
+		Item[] temp = (Item[]) new Object[capacity];
+		for(int i = 0; i < N; i++) {
+			temp[i] = a[i];
+		}
+		a = temp;
+	}
+
 	public void push(Item item) {
-		Node<Item> oldfirst = first;
-		first = new Node<Item>();
-		first.item = item;
-		first.next = oldfirst;
-		N++;
+		if(N == a.length) resize(2 * a.length);
+		a[N++] = item;
 	}
 
 	public Item pop() {
 		if(isEmpty()) throw new NoSuchElementException("Stack underflow");
-		Item item = first.item;
-		first = first.next;
+		Item item = a[N-1];
+		a[N-1] = null;
 		N--;
+		if(N > 0 && N == a.length / 4) resize(a.length/2);
 		return item;
 	}
 
 	public Item peek() {
 		if(isEmpty()) throw new NoSuchElementException("Stack underflow");
-		return first.item;
-	}
-
-	public String toString() {
-		StringBuilder s = new StringBuilder();
-		for(Item item : this) {
-			s.append(item + " ");
-		}
-		return s.toString();
+		return a[N-1];
 	}
 
 	public Iterator<Item> iterator() {
-		return new ListIterator<Item>(first);
+		return new StackIterator();
 	}
 
-	private class ListIterator<Item> implements Iterator<Item> {
-		private Node<Item> current;
+	private class StackIterator implements Iterator<Item> {
+		private int i;
 
-		public ListIterator(Node<Item> first) {
-			current = first;
+		public StackIterator() {
+			i = N -1;
 		}
 
 		public boolean hasNext() {
-			return current != null;
+			return i >= 0;
 		}
 
 		public void remove() {
@@ -97,9 +91,7 @@ public class Stack<Item> implements Iterable<Item> {
 
 		public Item next() {
 			if(!hasNext()) throw new NoSuchElementException();
-			Item item = current.item;
-			current = current.next;
-			return item;
+			return a[i--];
 		}
 	}
 
