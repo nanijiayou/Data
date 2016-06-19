@@ -1,6 +1,4 @@
 /*快速排序*/
-
-
 public class Quick{
 
 	private Quick() {}
