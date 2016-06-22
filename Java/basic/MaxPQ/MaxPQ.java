@@ -7,7 +7,7 @@
 *                       MaxPQ()             创建一个优先队列
 *                       MaxPQ(int max)      添加一个最大容量为max的优先队列
 *                       MaxPQ(Key[] a)      用a[]中的元素创建一个优先队列	
-*       void            Insert(Key v)		向优先队列中插入一个元素
+*       void            Insert(Key v)       向优先队列中插入一个元素
 *       Key             mak()               返回最大元素
 *       Key             delMax()            删除并返回最大元素
 *       boolean         isEmpty()           返回队列是否为空
