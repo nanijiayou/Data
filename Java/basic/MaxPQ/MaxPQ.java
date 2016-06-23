@@ -52,7 +52,8 @@ public class MaxPQ<Key extends Comparable<key>> {
 		pq[i] = pq[j];
 		pq[j] = swap;
 	}
-
+	
+	/*上浮swim*/
 	public void swim(int k) {
 		while(k > 1 && less(k/2, k)) {
 			exch(k, k/2);
@@ -60,6 +61,7 @@ public class MaxPQ<Key extends Comparable<key>> {
 		}
 	}
 
+	/*下沉sink*/
 	public void sink(int k) {
 		while(2*k <= N) {
 			int j = 2*k;
