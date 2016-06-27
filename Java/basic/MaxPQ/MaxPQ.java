@@ -71,7 +71,5 @@ public class MaxPQ<Key extends Comparable<key>> {
 			k = j;
 		}
 	}
-
-
 }
 
