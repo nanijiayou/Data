@@ -14,7 +14,6 @@
 *       int             size()              返回队列中元素的个数
 * -------------------------------------------------------------
 */
-
 public class MaxPQ<Key extends Comparable<key>> {
 
 	private Key[] pq;
