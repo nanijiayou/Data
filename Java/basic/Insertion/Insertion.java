@@ -2,10 +2,8 @@
  import edu.princeton.cs.algs4.StdIn;
  import edu.princeton.cs.algs4.StdOut;
  import java.util.Comparator;
-
  public class Insertion {
 	 private Insertion() {}
-
 	 public static void sort(Comparable[] a) {
 		 int N = a.length;
 		 for(int i = 1; i < N; i++) {
